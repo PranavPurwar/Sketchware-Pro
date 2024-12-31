@@ -1,4 +1,4 @@
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -10,7 +10,9 @@
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fitsSystemWindows="true">
+        android:fitsSystemWindows="true"
+        app:layout_constraintBottom_toTopOf="@id/contentLayout"
+        app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/topAppBar"
@@ -23,9 +25,11 @@
     <LinearLayout
         android:id="@+id/contentLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:orientation="vertical"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/appBarLayout">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/filesListRecyclerView"
@@ -35,6 +39,7 @@
             android:paddingBottom="120dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            tools:itemCount="23"
             tools:listitem="@layout/manage_java_item_hs" />
     </LinearLayout>
 
@@ -48,7 +53,8 @@
         android:paddingHorizontal="24dp"
         android:paddingBottom="100dp"
         android:visibility="gone"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:layout_constraintTop_toBottomOf="@id/appBarLayout">
 
         <TextView
             android:layout_width="wrap_content"
@@ -77,6 +83,9 @@
         android:layout_marginBottom="30dp"
         android:text="@string/assets_manager_options"
         app:icon="@drawable/ic_mtrl_add"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         tools:translationY="-70dp" />
 
     <LinearLayout
@@ -84,13 +93,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal|bottom"
-        android:layout_marginBottom="10dp"
-        android:alpha="0"
         android:animateLayoutChanges="true"
         android:gravity="center"
         android:orientation="horizontal"
         android:translationY="200dp"
         tools:alpha="1"
+        app:layout_constraintBottom_toBottomOf="parent"
         tools:translationY="0dp">
 
         <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
@@ -121,5 +129,5 @@
             android:text="@string/assets_manager_add_file" />
 
     </LinearLayout>
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
 

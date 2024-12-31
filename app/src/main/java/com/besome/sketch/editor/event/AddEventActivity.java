@@ -1,15 +1,5 @@
 package com.besome.sketch.editor.event;
 
-import a.a.a.bB;
-import a.a.a.dt;
-import a.a.a.gB;
-import a.a.a.jC;
-import a.a.a.mB;
-import a.a.a.oq;
-import a.a.a.rs;
-import a.a.a.wB;
-import a.a.a.xB;
-
 import android.animation.Animator;
 import android.content.Intent;
 import android.os.Bundle;
@@ -35,10 +25,21 @@ import com.besome.sketch.beans.EventBean;
 import com.besome.sketch.beans.ProjectFileBean;
 import com.besome.sketch.beans.ViewBean;
 import com.besome.sketch.lib.base.BaseAppCompatActivity;
-import pro.sketchware.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import a.a.a.bB;
+import a.a.a.dt;
+import a.a.a.gB;
+import a.a.a.jC;
+import a.a.a.mB;
+import a.a.a.oq;
+import a.a.a.rs;
+import a.a.a.wB;
+import a.a.a.xB;
+import pro.sketchware.R;
+import pro.sketchware.utility.ThemeUtils;
 
 public class AddEventActivity extends BaseAppCompatActivity implements View.OnClickListener {
     private ArrayList<EventBean> addableDrawerViewEvents;
@@ -414,9 +415,6 @@ public class AddEventActivity extends BaseAppCompatActivity implements View.OnCl
             }
         }
 
-        public EventAdapter() {
-        }
-
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             e = true;
@@ -524,10 +522,12 @@ public class AddEventActivity extends BaseAppCompatActivity implements View.OnCl
                 holder.container.setBackgroundResource(R.drawable.border_top_corner_white_no_stroke);
                 holder.img_icon.animate().scaleX(1.0f).scaleY(1.0f).alpha(1.0f).start();
                 holder.container.animate().translationY(0.0f).start();
+                holder.img_icon.setColorFilter(ThemeUtils.getColor(holder.img_icon, R.attr.colorPrimary));
             } else {
                 holder.container.setBackgroundResource(R.drawable.border_top_corner_grey_no_stroke);
                 holder.img_icon.animate().scaleX(0.8f).scaleY(0.8f).alpha(0.6f).start();
                 holder.container.setTranslationY(wB.a(getApplicationContext(), 12.0f));
+                holder.img_icon.setColorFilter(ThemeUtils.getColor(holder.img_icon, R.attr.colorControlNormal));
             }
         }
 
