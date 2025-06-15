@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,19 +21,18 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.besome.sketch.beans.ProjectLibraryBean;
 import com.besome.sketch.lib.base.BaseAppCompatActivity;
+import com.github.angads25.filepicker.model.DialogConfigs;
+import com.github.angads25.filepicker.model.DialogProperties;
+import com.github.angads25.filepicker.view.FilePickerDialog;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.materialswitch.MaterialSwitch;
 
-import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import a.a.a.DB;
 import a.a.a.GB;
 import a.a.a.bB;
-import dev.pranav.filepicker.FilePickerCallback;
-import dev.pranav.filepicker.FilePickerDialogFragment;
-import dev.pranav.filepicker.FilePickerOptions;
 import mod.hey.studios.util.Helper;
 import pro.sketchware.R;
 import pro.sketchware.utility.FileUtil;
@@ -270,26 +270,25 @@ public class ManageFirebaseActivity extends BaseAppCompatActivity implements Vie
     }
 
     private void showImportJsonDialog() {
-        FilePickerOptions options = new FilePickerOptions();
-        options.setExtensions(new String[]{"json"});
-        options.setTitle("Select your google-services.json");
+        DialogProperties properties = new DialogProperties();
 
-        FilePickerCallback callback = new FilePickerCallback() {
-            @Override
-            public void onFileSelected(File file) {
-                // Handle file selection
-                String filePath = file.getAbsolutePath();
-                String fileContent = FileUtil.readFile(filePath);
-                parseDataFromGoogleServicesJson(fileContent);
-            }
+        properties.selection_mode = DialogConfigs.SINGLE_MODE;
+        properties.selection_type = DialogConfigs.FILE_SELECT;
+        properties.root = Environment.getExternalStorageDirectory();
+        properties.error_dir = Environment.getExternalStorageDirectory();
+        properties.offset = Environment.getExternalStorageDirectory();
+        properties.extensions = new String[]{"json"};
 
-            @Override
-            public boolean onFileSelectionCancelled() {
-                return true;
-            }
-        };
+        FilePickerDialog pickerDialog = new FilePickerDialog(this, properties, R.style.RoundedCornersDialog);
 
-        new FilePickerDialogFragment(options, callback).show(getSupportFragmentManager(), "filePicker");
+        pickerDialog.setTitle("Select your google-services.json");
+        pickerDialog.setDialogSelectionListener(selections -> {
+            // Since the picker's in single mode, only one element can exist.
+            String fileContent = FileUtil.readFile(selections[0]);
+            parseDataFromGoogleServicesJson(fileContent);
+        });
+
+        pickerDialog.show();
     }
 
     private void parseDataFromGoogleServicesJson(String _data) {

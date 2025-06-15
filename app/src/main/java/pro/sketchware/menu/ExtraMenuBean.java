@@ -20,6 +20,9 @@ import com.besome.sketch.beans.AdUnitBean;
 import com.besome.sketch.beans.ComponentBean;
 import com.besome.sketch.beans.ProjectFileBean;
 import com.besome.sketch.editor.LogicEditorActivity;
+import com.github.angads25.filepicker.model.DialogConfigs;
+import com.github.angads25.filepicker.model.DialogProperties;
+import com.github.angads25.filepicker.view.FilePickerDialog;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -35,9 +38,6 @@ import a.a.a.eC;
 import a.a.a.jC;
 import a.a.a.uq;
 import a.a.a.wB;
-import dev.pranav.filepicker.FilePickerCallback;
-import dev.pranav.filepicker.FilePickerDialogFragment;
-import dev.pranav.filepicker.FilePickerOptions;
 import mod.hey.studios.util.Helper;
 import mod.hilal.saif.activities.tools.ConfigActivity;
 import mod.hilal.saif.asd.AsdDialog;
@@ -70,16 +70,17 @@ public class ExtraMenuBean {
     private final String NATIVE_PATH = FileUtil.getExternalStorageDir() + "/.sketchware/data/%s/files/native_libs/";
     private final DefaultExtraMenuBean defaultExtraMenu;
     private final FilePathUtil fpu;
-    private FilePickerDialogFragment fpd;
+    private final FilePickerDialog fpd;
     private final FileResConfig frc;
     private final LogicEditorActivity logicEditor;
-    private final FilePickerOptions mOptions = new FilePickerOptions();
+    private final DialogProperties mProperty = new DialogProperties();
     private final eC projectDataManager;
     private final String sc_id;
     private final String javaName;
     private String splitter;
 
     public ExtraMenuBean(LogicEditorActivity logicA) {
+        fpd = new FilePickerDialog(logicA);
         logicEditor = logicA;
         sc_id = logicA.B;
         fpu = new FilePathUtil();
@@ -796,27 +797,31 @@ public class ExtraMenuBean {
         String menuName = ss.getMenuName();
         ArrayList<String> markedPath = new ArrayList<>();
 
+        mProperty.selection_mode = DialogConfigs.SINGLE_MODE;
+        mProperty.selection_type = DialogConfigs.FILE_AND_DIR_SELECT;
         String path;
         if (menuName.equals("Assets")) {
-            mOptions.setTitle("Select an Asset");
+            fpd.setTitle("Select an Asset");
             path = String.format(ASSETS_PATH, sc_id);
             markedPath.add(0, path + ss.getArgValue().toString());
+            fpd.markFiles(markedPath);
+            mProperty.root = new File(path);
+            mProperty.error_dir = new File(path);
             String[] strArr = path.split("/");
             splitter = strArr[strArr.length - 1];
         } else if (menuName.equals("NativeLib")) {
-            mOptions.setTitle("Select a Native library");
+            fpd.setTitle("Select a Native library");
             path = String.format(NATIVE_PATH, sc_id);
             markedPath.add(0, path + ss.getArgValue().toString());
+            fpd.markFiles(markedPath);
+            mProperty.selection_type = DialogConfigs.FILE_SELECT;
+            mProperty.root = new File(path);
+            mProperty.error_dir = new File(path);
             String[] strArr = path.split("/");
             splitter = strArr[strArr.length - 1];
         }
-        FilePickerCallback callback = new FilePickerCallback() {
-            @Override
-            public void onFileSelected(File file) {
-                logicEditor.a(ss, file.getAbsolutePath());
-            }
-        };
-        fpd = new FilePickerDialogFragment(mOptions, callback);
-        fpd.show(logicEditor.getSupportFragmentManager(), "filePicker");
+        fpd.setProperties(mProperty);
+        fpd.setDialogSelectionListener(files -> logicEditor.a(ss, files[0].split(splitter)[1]));
+        fpd.show();
     }
 }
